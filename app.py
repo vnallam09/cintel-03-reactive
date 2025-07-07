@@ -71,30 +71,31 @@ app_ui =  ui.page_fluid(
 def server(input, output, session):
     @render.data_frame
     def data_table():
-        return penguins_df
+        return filtered_data()
 
     @render_widget
-    def data_grid():    
-        df=penguins_df[penguins_df['species'].isin(input.selected_species())]
+    def data_grid():
+        df = filtered_data()
+        #df=penguins_df[penguins_df['species'].isin(input.selected_species())]
         # df = df[['species',f'{input.selected_attribute()}']]
         return DataGrid(df)
 
     @render_widget
     def plotly_histogram():
         bins = input.plotly_bin_count()
-        return px.histogram(data_frame=penguins_df, x=f'{input.selected_attribute()}', nbins=bins, color='species', title='Plotly Histogram')
+        return px.histogram(data_frame=filtered_data(), x=f'{input.selected_attribute()}', nbins=bins, color='species', title='Plotly Histogram')
 
     @output
     @render.plot
     def seaborn_histogram():
         bins = input.seaborn_bin_count()
-        ax = sns.histplot(data=penguins_df, x=f'{input.selected_attribute()}', bins = int(f'{bins}'),  kde = True, hue='species')
+        ax = sns.histplot(data=filtered_data(), x=f'{input.selected_attribute()}', bins = int(f'{bins}'),  kde = True, hue='species')
         ax.set_title('Seaborn Histogram')
         return ax
 
     @render_widget
     def plotly_scatterplot():
-        return px.scatter(data_frame=penguins_df, x='bill_length_mm', y='bill_depth_mm', color='species', hover_name='species', size_max=10, title="Scatter Plot")
+        return px.scatter(data_frame=filtered_data(), x='bill_length_mm', y='bill_depth_mm', color='species', hover_name='species', size_max=10, title="Scatter Plot")
 # --------------------------------------------------------
 # Reactive calculations and effects
 # --------------------------------------------------------
@@ -106,7 +107,7 @@ def server(input, output, session):
 
     @reactive.calc
     def filtered_data():
-        return penguins_df
+        return penguins_df[penguins_df['species'].isin(input.selected_species())]
 
 app = App(app_ui, server)
 
