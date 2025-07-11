@@ -64,7 +64,7 @@ app_ui =  ui.page_fluid(
             output_widget("plotly_scatterplot"),
             full_screen=True
         ),
-        title="Teja's Penguin Data Dashboard"
+        title="🐧 Teja's Penguin Data Dashboard"
     )
 )
 
@@ -76,8 +76,6 @@ def server(input, output, session):
     @render_widget
     def data_grid():
         df = filtered_data()
-        #df=penguins_df[penguins_df['species'].isin(input.selected_species())]
-        # df = df[['species',f'{input.selected_attribute()}']]
         return DataGrid(df)
 
     @render_widget
@@ -96,14 +94,6 @@ def server(input, output, session):
     @render_widget
     def plotly_scatterplot():
         return px.scatter(data_frame=filtered_data(), x='bill_length_mm', y='bill_depth_mm', color='species', hover_name='species', size_max=10, title="Scatter Plot")
-# --------------------------------------------------------
-# Reactive calculations and effects
-# --------------------------------------------------------
-
-# Add a reactive calculation to filter the data
-# By decorating the function with @reactive, we can use the function to filter the data
-# The function will be called whenever an input functions used to generate that output changes.
-# Any output that depends on the reactive function (e.g., filtered_data()) will be updated when the data changes.
 
     @reactive.calc
     def filtered_data():
